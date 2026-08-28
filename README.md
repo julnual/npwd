@@ -1,29 +1,40 @@
 # PLOY & NAN — In Full Bloom
 
-Wedding website source for Ploy and Nan · 22 November 2026.
+Wedding website · 22 November 2026 · โรงแรมเกียรตินคร จ.นครศรีธรรมราช
 
-## Current status
+## GitHub Pages migration
 
-This repository contains the source and photographs copied from the existing Sites website. RSVP and wishes remain connected to Google Sheets through the existing server-side `/api/wedding` handler. The owner has successfully tested both forms on the existing website.
+The static frontend and existing-Google-Sheets receiver update are prepared.
+**The owner must update the existing Apps Script deployment before publishing.**
+This repository upload alone does not mean the GitHub Pages site is live.
 
-**This is a full-stack source repository, not a GitHub Pages static export.** Uploading it does not move the working backend to GitHub Pages. Do not enable Pages expecting the forms to work: Pages cannot execute the server handler or hold its runtime secrets. No replacement Google Forms are needed.
+- Target: https://julnual.github.io/npwd/
+- [Setup and publishing instructions](github-pages/README.md)
+- [Apps Script v2 — replace the existing Code.gs](apps-script/Code.gs)
+- [Manual publishing workflow](.github/workflows/github-pages.yml)
 
-The existing Sites publication and its access settings have not been changed by this source upload.
+The original layout, photographs, gallery, RSVP and wishes forms are reused.
+No replacement Google Forms or spreadsheet is required. The private original
+Sites publication and its access settings remain unchanged.
 
-## Development
+## Commands
 
-- Node.js >=22.13.0
-- Linux with GNU timeout, curl and flock
-- Install: `npm run install:ci`
-- Development: `npm run dev`
-- Production build: `npm run build`
+Node.js >=22.13.0. Install dependencies with `npm ci`.
 
-The site uses React, Vinext and a Cloudflare-compatible Worker. Application code is in `app/`; photos are in `public/images/`; the server-side Google Sheets adapter is in `lib/wedding-responses.ts`.
+| Target | Build | Tests |
+| --- | --- | --- |
+| GitHub Pages static site | `npm run build:pages` | `npm run test:pages` |
+| Original full-stack Sites app | `npm run build` | `npm test` |
 
-## Secrets and responses
+The Pages artifact is `dist/github-pages/`. It uses relative asset paths and a
+Google Apps Script acknowledgement bridge; it does not use the private server's
+`/api/wedding` endpoint. The original server handler is preserved for Sites.
 
-Set `WEDDING_SHEETS_URL` and `WEDDING_API_KEY` only in the hosting runtime. `.env.example` intentionally contains no values. Never add a real `.env` file, a private connection key, guest responses or a spreadsheet export to this public repository. Never put the API key in browser code or a static build.
+## Privacy and secrets
 
-## Remaining GitHub Pages migration work
-
-To serve the website at `https://julnual.github.io/npwd/`, a static frontend export with `/npwd/`-compatible asset paths and an approved public backend is required. The current Sites publication is owner-only, so its protected endpoint cannot be used as a public guest backend without a separate access decision. The existing Apps Script and Google Sheet can be retained.
+Never commit real `.env` files, `WEDDING_API_KEY`, private connection keys, guest
+responses or Sheet exports to this public repository. Keep the original key and
+spreadsheet ID in Apps Script's existing Script Properties. The new public
+submission flow validates input and limits write rate, but is not bot-proof or
+guest authentication. Google Sheets sharing remains unchanged and no guest-list
+read endpoint is provided. See the setup guide for limitations and rollback.

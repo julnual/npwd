@@ -6,6 +6,8 @@
     "node": ">=22.13.0"
   },
   "scripts": {
+    "build:pages": "vite build --config github-pages/vite.config.mjs && node github-pages/verify-build.mjs",
+    "test:pages": "node --test github-pages/tests/*.test.mjs",
     "install:ci": "bash scripts/install-ci.sh",
     "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vite",
     "build": "bash scripts/build-verified.sh",
