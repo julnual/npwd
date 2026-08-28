@@ -17,8 +17,8 @@ const sections = [
 ];
 
 const weddingSchedule = [
-  { time: "08.09", dateTime: "2026-11-22T08:09:00+07:00", title: "พิธีแห่ขันหมาก", Icon: Gift },
-  { time: "09.29", dateTime: "2026-11-22T09:29:00+07:00", title: "พิธีรดน้ำสังข์", Icon: Shell },
+  { time: "09.09", dateTime: "2026-11-22T09:09:00+07:00", title: "พิธีแห่ขันหมาก", Icon: Gift },
+  { time: "10.10", dateTime: "2026-11-22T10:10:00+07:00", title: "พิธีรดน้ำสังข์", Icon: Shell },
   { time: "12.00", dateTime: "2026-11-22T12:00:00+07:00", title: "ร่วมรับประทานอาหาร", Icon: UtensilsCrossed },
 ];
 
@@ -153,13 +153,13 @@ export default function Home() {
       <section className="dress-section" id="dress-code" aria-labelledby="dress-title">
         <p className="section-eyebrow">A little color, a little joy</p>
         <h2 id="dress-title">Dress Code</h2>
-        <p className="dress-palette-name">Green <span>·</span> White <span>·</span> Pink</p>
+        <p className="dress-palette-name">Green <span>·</span> Pink <span>·</span> White</p>
         <ul className="dress-swatches" aria-label="สีชุดสำหรับร่วมงาน">
           <li><span className="swatch swatch-green" aria-hidden="true" /><span>Green<small>เขียว</small></span></li>
-          <li><span className="swatch swatch-white" aria-hidden="true" /><span>White<small>ขาว</small></span></li>
           <li><span className="swatch swatch-pink" aria-hidden="true" /><span>Pink<small>ชมพู</small></span></li>
+          <li><span className="swatch swatch-white" aria-hidden="true" /><span>White<small>ขาว</small></span></li>
         </ul>
-        <p className="dress-note">ร่วมเติมสีสันให้วันของเรา<br />ด้วยชุดโทนเขียว ขาว หรือชมพู ในแบบที่เป็นคุณ</p>
+        <p className="dress-note">ร่วมเติมสีสันให้วันของเรา<br />ด้วยชุดโทนเขียว ชมพู หรือขาว ในแบบที่เป็นคุณ</p>
       </section>
       <WeddingGallery />
       <WeddingForms />

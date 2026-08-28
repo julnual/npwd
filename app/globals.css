@@ -113,11 +113,11 @@ a:focus-visible { outline: 2px solid currentColor; outline-offset: 5px; }
 .invitation-copy p { margin: 0 0 1.4rem; }
 .invitation-signature { margin: 2rem 0 2.6rem; color: var(--botanical); font-family: "Parisienne", cursive; font-size: clamp(2.6rem, 10vw, 3.5rem); line-height: 1.3; }
 .invitation-signature span { color: #98645c; }
-.invitation-date { max-width: 26rem; margin-inline: auto; padding-top: 2rem; border-top: 1px solid var(--line); }
-.invitation-date .section-eyebrow { margin-bottom: .65rem; font-size: .7rem; }
+.invitation-date { max-width: 30rem; margin-inline: auto; padding-top: 2rem; border-top: 1px solid var(--line); }
+.invitation-date .section-eyebrow { margin-bottom: .9rem; font-size: clamp(1rem, 3.5vw, 1.2rem); font-weight: 400; line-height: 1.5; letter-spacing: .18em; }
 .invitation-date time { display: grid; justify-items: center; color: var(--botanical); }
-.invitation-date-english { font-family: "Libre Caslon Display", Georgia, serif; font-size: clamp(1.15rem, 4.5vw, 1.5rem); line-height: 1.4; letter-spacing: .1em; white-space: nowrap; }
-.invitation-date-thai { margin-top: .8rem; color: #596052; font-size: .82rem; }
+.invitation-date-english { font-family: "Libre Caslon Display", Georgia, serif; font-size: clamp(1.4rem, 6vw, 2.25rem); font-weight: 400; line-height: 1.45; letter-spacing: .07em; white-space: nowrap; }
+.invitation-date-thai { margin-top: .9rem; color: var(--botanical); font-size: clamp(1rem, 3.8vw, 1.125rem); font-weight: 400; line-height: 1.8; }
 .countdown-section { border-top: 1px solid #d8dfcf; background: #edf0e7; }
 .countdown-inner { max-width: 50rem; margin-inline: auto; }
 .countdown-section .section-eyebrow { color: #59684e; }
