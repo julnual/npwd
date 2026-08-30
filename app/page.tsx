@@ -153,13 +153,14 @@ export default function Home() {
       <section className="dress-section" id="dress-code" aria-labelledby="dress-title">
         <p className="section-eyebrow">A little color, a little joy</p>
         <h2 id="dress-title">Dress Code</h2>
-        <p className="dress-palette-name">Green <span>·</span> Pink <span>·</span> White</p>
         <ul className="dress-swatches" aria-label="สีชุดสำหรับร่วมงาน">
-          <li><span className="swatch swatch-green" aria-hidden="true" /><span>Green<small>เขียว</small></span></li>
-          <li><span className="swatch swatch-pink" aria-hidden="true" /><span>Pink<small>ชมพู</small></span></li>
-          <li><span className="swatch swatch-white" aria-hidden="true" /><span>White<small>ขาว</small></span></li>
+          <li><span className="swatch swatch-olive" role="img" aria-label="สีรหัส #858A74" /></li>
+          <li><span className="swatch swatch-sage" role="img" aria-label="สีรหัส #A6AD8E" /></li>
+          <li><span className="swatch swatch-blush-light" role="img" aria-label="สีรหัส #F1E7E6" /></li>
+          <li><span className="swatch swatch-blush" role="img" aria-label="สีรหัส #E1C3C1" /></li>
+          <li><span className="swatch swatch-rose" role="img" aria-label="สีรหัส #CFA29F" /></li>
         </ul>
-        <p className="dress-note">ร่วมเติมสีสันให้วันของเรา<br />ด้วยชุดโทนเขียว ชมพู หรือขาว ในแบบที่เป็นคุณ</p>
+        <p className="dress-note">ร่วมเติมสีสันให้วันของเรา<br />ด้วยชุดโทนสีตามพาเลต ในแบบที่เป็นคุณ</p>
       </section>
       <WeddingGallery />
       <WeddingForms />

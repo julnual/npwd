@@ -199,13 +199,14 @@ a:focus-visible { outline: 2px solid currentColor; outline-offset: 5px; }
 .dress-section, .response-section { padding: clamp(4.5rem, 10vw, 8rem) 1.25rem; scroll-margin-top: 1rem; }
 .dress-section { text-align: center; background: var(--paper); }
 .dress-section h2, .response-heading h2 { margin: 0; color: var(--botanical); font-family: "Libre Caslon Display", Georgia, serif; font-size: clamp(3rem, 10vw, 4.8rem); font-weight: 400; line-height: 1.12; }
-.dress-palette-name { margin: 1rem 0 0; font-family: "Libre Caslon Display", Georgia, serif; font-size: 1.5rem; letter-spacing: .04em; }
-.dress-palette-name span { padding-inline: .35rem; color: #a77b72; }
-.dress-swatches { display: flex; justify-content: center; gap: clamp(1.2rem, 6vw, 3.5rem); list-style: none; padding: 0; margin: 2.7rem auto 2rem; }
-.dress-swatches li { display: grid; justify-items: center; gap: 1rem; font-family: "Libre Caslon Display", Georgia, serif; font-size: 1.2rem; }
-.swatch { display: block; width: clamp(4rem, 18vw, 5.6rem); height: clamp(4rem, 18vw, 5.6rem); border-radius: 50%; border: 1px solid rgba(68,84,63,.14); box-shadow: 0 0 0 6px var(--paper), 0 0 0 7px rgba(68,84,63,.12); }
-.swatch-green { background: #9fac8e; }.swatch-white { background: #fffdf8; }.swatch-pink { background: #ddb2ae; }
-.dress-swatches small { display: block; font-family: "Noto Sans Thai", sans-serif; font-size: .73rem; color: #66705f; margin-top: .3rem; }
+.dress-swatches { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(.85rem, 3.4vw, 2rem); max-width: 38rem; list-style: none; padding: 0; margin: 2.7rem auto 2rem; }
+.dress-swatches li { display: grid; justify-items: center; }
+.swatch { display: block; width: clamp(3.25rem, 14vw, 5.2rem); height: clamp(3.25rem, 14vw, 5.2rem); border-radius: 50%; border: 1px solid rgba(68,84,63,.14); box-shadow: 0 0 0 5px var(--paper), 0 0 0 6px rgba(68,84,63,.12); }
+.swatch-olive { background: #858a74; }
+.swatch-sage { background: #a6ad8e; }
+.swatch-blush-light { background: #f1e7e6; }
+.swatch-blush { background: #e1c3c1; }
+.swatch-rose { background: #cfa29f; }
 .dress-note, .response-description { font-size: .9rem; color: #596052; line-height: 2; }
 .rsvp-section { background: #edf0e7; border-top: 1px solid #d8dfcf; }
 .wishes-section { background: #fbf1ed; border-top: 1px solid #e9d8d0; }

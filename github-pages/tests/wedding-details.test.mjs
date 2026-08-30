@@ -17,11 +17,22 @@ test("ceremony labels and machine-readable times agree with the revised schedule
   assert(!page.includes('time: "09.29"'));
 });
 
-test("dress-code heading, swatches and Thai note all use green, pink, white", () => {
-  assert(page.includes('Green <span>·</span> Pink <span>·</span> White'));
-  const swatches = [...page.matchAll(/className="swatch swatch-(\w+)"/g)].map(m => m[1]);
-  assert.deepEqual(swatches, ["green", "pink", "white"]);
-  assert(page.includes("ด้วยชุดโทนเขียว ชมพู หรือขาว"));
+test("dress code uses the five requested swatches without visible color names", () => {
+  const swatches = [...page.matchAll(/className="swatch swatch-([\w-]+)" role="img" aria-label="สีรหัส (#[A-F0-9]+)"/g)]
+    .map(([, className, code]) => ({ className, code }));
+  assert.deepEqual(swatches, [
+    { className: "olive", code: "#858A74" },
+    { className: "sage", code: "#A6AD8E" },
+    { className: "blush-light", code: "#F1E7E6" },
+    { className: "blush", code: "#E1C3C1" },
+    { className: "rose", code: "#CFA29F" },
+  ]);
+  assert(!page.includes("dress-palette-name"));
+  assert(!page.includes("<small>"));
+  assert(page.includes("ด้วยชุดโทนสีตามพาเลต ในแบบที่เป็นคุณ"));
+  for (const { className, code } of swatches) {
+    assert(css.includes(`.swatch-${className} { background: ${code.toLowerCase()}; }`));
+  }
 });
 
 test("save-the-date keeps three lines with larger responsive type and English date unbroken", () => {

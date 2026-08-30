@@ -1,7 +1,9 @@
 name: Publish wedding to GitHub Pages
 
-# Manual until the existing Apps Script deployment has been updated to v2.
+# Publish future updates automatically; manual runs remain available for retries.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
