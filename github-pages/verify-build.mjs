@@ -9,6 +9,9 @@ const jsName = readdirSync(path.join(out, "assets")).find(name => name.endsWith(
 const js = readFileSync(path.join(out, "assets", jsName), "utf8");
 assert(html.includes('lang="th"') && html.includes("PLOY &amp; NAN"));
 assert(html.includes('./assets/') && !html.includes('src="/assets/'));
+assert(html.includes('href="./favicon-heart.svg"'), "Wedding heart favicon is not linked");
+const favicon = readFileSync(path.join(out, "favicon-heart.svg"), "utf8");
+assert(favicon.includes("#CFA29F") && favicon.includes("#858A74") && favicon.includes("PLOY &amp; NAN heart"), "Wedding heart favicon is missing or has the wrong palette");
 assert(!js.includes('"/images/'), "Root-relative image path leaked into Pages");
 assert(!js.includes("WEDDING_API_KEY"), "Private API configuration leaked into static client");
 assert(!js.includes("cloudflare:workers"), "Server code leaked into static client");

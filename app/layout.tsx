@@ -5,8 +5,8 @@ export const metadata: Metadata = {
   title: "PLOY & NAN — In Full Bloom",
   description: "Wedding invitation of Ploy & Nan — 22 November 2026",
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
+    icon: "/favicon-heart.svg",
+    shortcut: "/favicon-heart.svg",
   },
 };
 
