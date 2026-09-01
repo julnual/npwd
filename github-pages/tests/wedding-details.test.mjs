@@ -9,7 +9,7 @@ test("ceremony labels and machine-readable times agree with the revised schedule
   for (const [time, iso, title] of [
     ["09.09", "09:09", "พิธีแห่ขันหมาก"],
     ["10.10", "10:10", "พิธีรดน้ำสังข์"],
-    ["12.00", "12:00", "ร่วมรับประทานอาหาร"],
+    ["12.00", "12:00", "ร่วมรับประทานอาหาร (โต๊ะจีน)"],
   ]) {
     assert(page.includes(`time: "${time}", dateTime: "2026-11-22T${iso}:00+07:00", title: "${title}"`));
   }
