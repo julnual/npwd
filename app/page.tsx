@@ -2,7 +2,7 @@ import WeddingCountdown from "./wedding-countdown";
 import WeddingForms from "./wedding-forms";
 import WeddingGallery from "./wedding-gallery";
 import { Button } from "@/components/ui/button";
-import { Gift, Shell, UtensilsCrossed, Utensils } from "lucide-react";
+import { Gift, Shell, Utensils } from "lucide-react";
 
 // Use the supplied venue name and province; do not guess coordinates or a place ID.
 const venueMapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("โรงแรมเกียรตินคร จังหวัดนครศรีธรรมราช")}`;
