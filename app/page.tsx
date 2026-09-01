@@ -19,7 +19,7 @@ const sections = [
 const weddingSchedule = [
   { time: "09.09", dateTime: "2026-11-22T09:09:00+07:00", title: "พิธีแห่ขันหมาก", Icon: Gift },
   { time: "10.10", dateTime: "2026-11-22T10:10:00+07:00", title: "พิธีรดน้ำสังข์", Icon: Shell },
-  { time: "12.00", dateTime: "2026-11-22T12:00:00+07:00", title: "ร่วมรับประทานอาหาร (โต๊ะจีน)", Icon: UtensilsCrossed },
+  { time: "12.00", dateTime: "2026-11-22T12:00:00+07:00", title: "ร่วมรับประทานอาหาร (โต๊ะจีน)", Icon: Utensils },
 ];
 
 function Monogram() {
