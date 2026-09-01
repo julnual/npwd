@@ -1,11 +1,13 @@
 import WeddingCountdown from "./wedding-countdown";
 import WeddingForms from "./wedding-forms";
 import WeddingGallery from "./wedding-gallery";
+import WeddingWishesCarousel from "./wedding-wishes-carousel";
 import { Button } from "@/components/ui/button";
 import { Gift, Shell, Utensils } from "lucide-react";
 
 // Use the supplied venue name and province; do not guess coordinates or a place ID.
 const venueMapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("โรงแรมเกียรตินคร จังหวัดนครศรีธรรมราช")}`;
+const weddingWishesFeedUrl = "https://script.google.com/macros/s/AKfycbxCh7an4LDvCNTwOCIksHOwKmBzkZh3_syNw59WgA4p2C_Bzt5Spo59GbxUHMr6mHG2/exec?mode=wishes";
 
 const sections = [
   { id: "invitation", label: "Invitation" },
@@ -13,6 +15,7 @@ const sections = [
   { id: "timeline", label: "Timeline" },
   { id: "location", label: "Location" },
   { id: "gallery", label: "Gallery" },
+  { id: "wish-wall", label: "Wishes" },
   { id: "rsvp", label: "RSVP" },
 ];
 
@@ -163,6 +166,7 @@ export default function Home() {
         <p className="dress-note">ร่วมเติมสีสันให้วันของเรา<br />ด้วยชุดโทนสีตามพาเลต ในแบบที่เป็นคุณ</p>
       </section>
       <WeddingGallery />
+      <WeddingWishesCarousel feedUrl={weddingWishesFeedUrl} />
       <WeddingForms />
     </main>
   );

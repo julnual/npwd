@@ -36,6 +36,7 @@ function ResponseForm({ type }: { type: "rsvp" | "wish" }) {
         throw new Error(result.code === "NOT_CONFIGURED" ? "ยังเชื่อมต่อ Google Sheets ไม่ครบ กรุณาลองอีกครั้งหลังตั้งค่าคีย์เรียบร้อยค่ะ" : "ยังยืนยันการบันทึกไม่ได้ กรุณาลองส่งอีกครั้ง ข้อมูลที่กรอกยังอยู่ค่ะ");
       }
       setState("success");
+      if (!isRsvp) window.dispatchEvent(new Event("ploy-nan:wish-saved"));
     } catch (error) {
       setState("error");
       setMessage(error instanceof Error && error.name === "Error" ? error.message : "การเชื่อมต่อขัดข้อง กรุณาลองส่งอีกครั้ง ข้อมูลที่กรอกยังอยู่ค่ะ");
@@ -71,7 +72,7 @@ function ResponseForm({ type }: { type: "rsvp" | "wish" }) {
         <label htmlFor="wish-message">คำอวยพรถึงพลอยและแนน <span aria-hidden="true">*</span></label>
         <Textarea id="wish-message" name="message" required maxLength={2000} rows={6} className="wedding-input" placeholder="ฝากความรักและคำอวยพรเล็ก ๆ ไว้ให้เรา…" />
       </div>}
-      <p className="form-privacy">{isRsvp ? "ข้อมูลใช้สำหรับจัดเตรียมงานแต่ง และไม่แสดงรายชื่อบนเว็บไซต์" : "คำอวยพรจะส่งให้บ่าวสาว โดยไม่แสดงข้อความบนเว็บไซต์"}</p>
+      <p className="form-privacy">{isRsvp ? "ข้อมูลใช้สำหรับจัดเตรียมงานแต่ง และไม่แสดงรายชื่อบนเว็บไซต์" : "คำอวยพรอาจแสดงบนเว็บไซต์โดยไม่เปิดเผยชื่อหรือข้อมูลของผู้ส่ง"}</p>
       <Button type="submit" size="lg" className="wedding-submit" disabled={state === "sending"}>
         {state === "sending" ? <><LoaderCircle className="sending-icon" size={18} aria-hidden="true" />กำลังบันทึก…</> : <>{isRsvp ? "ยืนยันการตอบรับ" : "ส่งคำอวยพร"}<ArrowUpRight size={18} aria-hidden="true" /></>}
       </Button>

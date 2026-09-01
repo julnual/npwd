@@ -11,6 +11,7 @@ function fixture() {
   let now = 1790000000000;
   let locked = false;
   let available = true;
+  const cache = {};
   const props = { WEDDING_API_KEY: key, WEDDING_SPREADSHEET_ID: "fake-sheet-id" };
   const tabs = {};
   const output = value => ({ value, setMimeType() { return this; }, setXFrameOptionsMode() { return this; } });
@@ -21,7 +22,8 @@ function fixture() {
     Utilities: { getUuid: randomUUID, formatDate: () => "2026-09-21 00:00:00",
       computeHmacSha256Signature: (message, secret) => createHmac("sha256", secret).update(message).digest(),
       base64EncodeWebSafe: bytes => Buffer.from(bytes).toString("base64url") },
-    ContentService: { createTextOutput: output, MimeType: { JSON: "json" } },
+    CacheService: { getScriptCache: () => ({ get: k => cache[k] ?? null, put: (k, v) => { cache[k] = v; } }) },
+    ContentService: { createTextOutput: output, MimeType: { JSON: "json", JAVASCRIPT: "javascript" } },
     HtmlService: { createHtmlOutput: output, XFrameOptionsMode: { ALLOWALL: "allowall" } },
     SpreadsheetApp: { openById: id => { assert.equal(id, "fake-sheet-id"); return { getSheetByName: name => tabs[name] }; }, flush() {} },
   });
@@ -32,6 +34,7 @@ function fixture() {
       getRange(row, col, count, width) {
         return {
           getValues: () => rows.slice(row - 1, row - 1 + count).map(r => r.slice(col - 1, col - 1 + width)),
+          getDisplayValues: () => rows.slice(row - 1, row - 1 + count).map(r => r.slice(col - 1, col - 1 + width).map(String)),
           setValues(values) { values.forEach((r, i) => { rows[row - 1 + i] = Array.from(r, v => typeof v === "string" && /^'[=+@-]/.test(v) ? v.slice(1) : v); }); },
           createTextFinder(id) { return { matchEntireCell() { return this; }, matchCase() { return this; }, useRegularExpression() { return this; },
             findNext() { const idx = rows.findIndex((r, i) => i >= row - 1 && r[col - 1] === id); return idx < 0 ? null : { getRow: () => idx + 1 }; } }; },
@@ -76,6 +79,19 @@ test("RSVP, nonattendance, and wishes append to original tabs; locks release", (
   }
   assert.equal(f.tabs.RSVP.rows.length, 3); assert.equal(f.tabs.Wishes.rows.length, 2);
   assert.equal(f.tabs.RSVP.rows[2][4], 0); assert.equal(f.locked(), false);
+});
+test("public wishes feed returns message text only and never exposes names or metadata", () => {
+  const f = fixture();
+  const first = f.data({ type: "wish", name: "ผู้ส่งลับ", message: "ขอให้มีความสุขมาก ๆ" });
+  const second = f.data({ type: "wish", name: "อีกคน", message: "รักกันตลอดไปนะ" });
+  assert.equal(f.privatePost(first).ok, true); assert.equal(f.privatePost(second).ok, true);
+  const callback = "__ployNanWishes_0123456789abcdef0123456789abcdef";
+  const out = f.context.doGet({ parameter: { mode: "wishes", callback } }).value;
+  assert(out.startsWith(`${callback}(`));
+  assert(!out.includes("ผู้ส่งลับ")); assert(!out.includes("อีกคน"));
+  assert(!out.includes(first.requestId)); assert(!out.includes("2026-09-21"));
+  const payload = JSON.parse(out.slice(callback.length + 1, -2));
+  assert.deepEqual(Array.from(payload.wishes), ["รักกันตลอดไปนะ", "ขอให้มีความสุขมาก ๆ"]);
 });
 test("idempotent retries and conflicting payloads", () => {
   const f = fixture(); const d = f.data();

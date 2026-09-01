@@ -22,13 +22,14 @@ export function pagesAdapter() {
       }
       if (["app/page.tsx", "lib/wedding-gallery.ts"].some(name => file === path.join(root, name))) {
         if (!code.includes('"/images/')) throw new Error(`Image paths changed in ${file}; review Pages adapter`);
-        return code.replaceAll('"/images/', '"./images/');
+        code = code.replaceAll('"/images/', '"./images/');
+        return code;
       }
     },
   };
 }
 
-export default defineConfig({
+export default defineConfig(() => ({
   root: path.join(root, "github-pages"),
   base: "./",
   publicDir: path.join(root, "public"),
@@ -36,4 +37,4 @@ export default defineConfig({
   resolve: { alias: { "@": root } },
   css: { postcss: root },
   build: { outDir: path.join(root, "dist/github-pages"), emptyOutDir: true, sourcemap: false },
-});
+}));

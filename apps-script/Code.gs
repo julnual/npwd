@@ -17,6 +17,7 @@ var WEDDING_HEADERS = {
 function doGet(event) {
   var p = event && event.parameter || {};
   if (!p.mode) return json_({ ok: true, service: 'Ploy & Nan', version: 2, ready: configured_() });
+  if (p.mode === 'wishes') return publicWishes_(p);
   if (p.mode !== 'challenge' || !originAllowed_(p.origin) || !uuid_(p.channel) || !uuid_(p.requestId)) {
     return json_({ ok: false, code: 'INVALID_REQUEST' });
   }
@@ -29,6 +30,36 @@ function doGet(event) {
     return bridgeReply_(p, 'challenge', { ok: true, token: unsigned + '.' + signed });
   } catch (_) {
     return bridgeReply_(p, 'challenge', { ok: false, code: 'UNAVAILABLE' });
+  }
+}
+
+function publicWishes_(p) {
+  var callback = String(p.callback || '');
+  if (!/^__ployNanWishes_[a-f0-9]{32}$/i.test(callback)) return javascript_('/* invalid callback */');
+  var result = { ok: false, wishes: [] };
+  try {
+    if (!configured_()) return javascript_(callback + '(' + JSON.stringify(result) + ');');
+    var cache = CacheService.getScriptCache();
+    var cached = cache.get('public-wishes-v1');
+    if (cached) return javascript_(callback + '(' + cached + ');');
+    var id = PropertiesService.getScriptProperties().getProperty('WEDDING_SPREADSHEET_ID');
+    var sheet = SpreadsheetApp.openById(id).getSheetByName('Wishes');
+    if (!sheet) return javascript_(callback + '(' + JSON.stringify(result) + ');');
+    verifyHeaders_(sheet, 'Wishes');
+    var lastRow = sheet.getLastRow();
+    var startRow = Math.max(2, lastRow - 199);
+    var count = Math.max(0, lastRow - startRow + 1);
+    var wishes = count ? sheet.getRange(startRow, 4, count, 1).getDisplayValues()
+      .map(function(row) { return String(row[0] || '').trim(); })
+      .filter(Boolean).reverse().slice(0, 50) : [];
+    result = { ok: true, wishes: wishes };
+    var serialized = JSON.stringify(result).replace(/[<>&\u2028\u2029]/g, function(c) {
+      return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4);
+    });
+    cache.put('public-wishes-v1', serialized, 60);
+    return javascript_(callback + '(' + serialized + ');');
+  } catch (_) {
+    return javascript_(callback + '(' + JSON.stringify(result) + ');');
   }
 }
 
@@ -195,3 +226,4 @@ function verifyHeaders_(sheet, name) {
 }
 
 function json_(data) { return ContentService.createTextOutput(JSON.stringify(data)).setMimeType(ContentService.MimeType.JSON); }
+function javascript_(code) { return ContentService.createTextOutput(code).setMimeType(ContentService.MimeType.JAVASCRIPT); }

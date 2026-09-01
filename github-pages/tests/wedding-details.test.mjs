@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 
 const page = readFileSync(new URL("../../app/page.tsx", import.meta.url), "utf8");
 const css = readFileSync(new URL("../../app/globals.css", import.meta.url), "utf8");
+const wishes = readFileSync(new URL("../../app/wedding-wishes-carousel.tsx", import.meta.url), "utf8");
 
 test("ceremony labels and machine-readable times agree with the revised schedule", () => {
   for (const [time, iso, title] of [
@@ -15,6 +16,23 @@ test("ceremony labels and machine-readable times agree with the revised schedule
   }
   assert(!page.includes('time: "08.09"'));
   assert(!page.includes('time: "09.29"'));
+});
+
+test("anonymous wishes carousel sits between gallery and forms with swipe and five-second autoplay", () => {
+  assert.match(page, /<WeddingGallery\s*\/>\s*<WeddingWishesCarousel feedUrl=\{weddingWishesFeedUrl\}\s*\/>\s*<WeddingForms\s*\/>/);
+  assert(page.includes("https://script.google.com/macros/s/AKfycbxCh7an4LDvCNTwOCIksHOwKmBzkZh3_syNw59WgA4p2C_Bzt5Spo59GbxUHMr6mHG2/exec?mode=wishes"));
+  assert(wishes.includes("AUTOPLAY_MS = 5000"));
+  assert(wishes.includes("MAX_WISH_CHARACTERS = 300"));
+  assert(wishes.includes('.slice(0, MAX_WISH_CHARACTERS).join("").trimEnd()}...`'));
+  assert(wishes.includes("useEmblaCarousel"));
+  assert(wishes.includes('id="wish-wall"'));
+  assert(wishes.includes("PLOY &amp; NAN"));
+  assert(!wishes.includes("sender"));
+  assert(wishes.includes("feedUrl ? [] : PREVIEW_WISHES"));
+  assert.match(css, /\.wish-card\s*\{/);
+  assert(!wishes.includes("wish-progress"));
+  assert(!wishes.includes("Pause"));
+  assert.match(css, /\.wish-carousel-viewport\s*\{[^}]*padding-block:/);
 });
 
 test("dress code uses the five requested swatches without visible color names", () => {
