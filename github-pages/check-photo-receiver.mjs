@@ -3,7 +3,9 @@ import { randomUUID } from "node:crypto";
 import { PHOTO_SCRIPT_URL, SITE_ORIGIN } from "./share/config.mjs";
 
 assert(!PHOTO_SCRIPT_URL.includes("REPLACE_WITH_"), "Add the new dedicated photo Apps Script /exec URL before publishing.");
-const response = await fetch(PHOTO_SCRIPT_URL, { signal: AbortSignal.timeout(60000) });
+const healthUrl = new URL(PHOTO_SCRIPT_URL);
+healthUrl.searchParams.set("health", String(Date.now()));
+const response = await fetch(healthUrl, { signal: AbortSignal.timeout(60000) });
 assert(response.ok, "Cannot reach the dedicated photo Apps Script deployment.");
 let health;
 try { health = await response.json(); } catch { throw new Error("Photo Apps Script must allow Anyone and return JSON health."); }
