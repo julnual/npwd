@@ -7,7 +7,7 @@ const response = await fetch(PHOTO_SCRIPT_URL, { signal: AbortSignal.timeout(600
 assert(response.ok, "Cannot reach the dedicated photo Apps Script deployment.");
 let health;
 try { health = await response.json(); } catch { throw new Error("Photo Apps Script must allow Anyone and return JSON health."); }
-assert(health.ok && health.version === 1 && health.photoReady === true,
+assert(health.ok && health.version === 2 && health.photoReady === true && health.mediaReady === true,
   "Run setupPhotoSharing and deploy the dedicated photo Apps Script before publishing.");
 
 const url = new URL(PHOTO_SCRIPT_URL);
@@ -20,4 +20,4 @@ url.search = new URLSearchParams({
 const challenge = await fetch(url, { signal: AbortSignal.timeout(60000) });
 const html = await challenge.text();
 assert(challenge.ok && html.includes("ploy-nan-photo"), "The dedicated photo challenge bridge did not load.");
-console.log("Dedicated photo Apps Script is configured and ready. No photo was uploaded.");
+console.log("Dedicated media Apps Script is configured and ready. No file was uploaded.");

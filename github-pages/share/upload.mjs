@@ -9,21 +9,21 @@ function isGoogleScriptOrigin(origin) {
   } catch { return false; }
 }
 
-export function submitPhoto(payload, onPhase = () => {}) {
+export function submitMedia(payload, onPhase = () => {}) {
   return new Promise((resolve, reject) => {
     if (window.location.origin !== SITE_ORIGIN) {
-      reject(new Error("โหมด Preview ใช้ตรวจหน้าจอและการเลือกรูปได้ การส่งจริงจะเปิดใช้งานบน julnual.github.io ค่ะ"));
+      reject(new Error("โหมด Preview ใช้ตรวจหน้าจอและการเลือกไฟล์ได้ การส่งจริงจะเปิดใช้งานบน julnual.github.io ค่ะ"));
       return;
     }
     if (!payload || !/^[a-f0-9-]{36}$/i.test(payload.requestId || "")) {
-      reject(new Error("ข้อมูลรูปไม่ถูกต้อง กรุณาเลือกใหม่อีกครั้งค่ะ"));
+      reject(new Error("ข้อมูลไฟล์ไม่ถูกต้อง กรุณาเลือกใหม่อีกครั้งค่ะ"));
       return;
     }
 
     const channel = crypto.randomUUID();
     const frame = document.createElement("iframe");
     frame.name = `wedding-photo-${channel}`;
-    frame.title = "ช่องทางส่งรูปภาพ";
+    frame.title = "ช่องทางส่งรูปและวิดีโอ";
     frame.hidden = true;
     frame.setAttribute("aria-hidden", "true");
     frame.tabIndex = -1;
@@ -86,7 +86,7 @@ export function submitPhoto(payload, onPhase = () => {}) {
         form.submit();
         form.remove();
       } catch {
-        finish(new Error("ส่งรูปไม่สำเร็จ กรุณาลองอีกครั้งค่ะ"));
+        finish(new Error("ส่งไฟล์ไม่สำเร็จ กรุณาลองอีกครั้งค่ะ"));
       }
     }
 
@@ -107,11 +107,11 @@ export function submitPhoto(payload, onPhase = () => {}) {
 function errorMessage(code) {
   const messages = {
     PHOTO_NOT_CONFIGURED: "ระบบรับรูปยังตั้งค่าไม่ครบ กรุณาแจ้ง PLOY & NAN ค่ะ",
-    INVALID_FIELDS: "รูปภาพไม่ผ่านการตรวจสอบ กรุณาเลือกภาพใหม่ค่ะ",
+    INVALID_FIELDS: "ไฟล์ไม่ผ่านการตรวจสอบ กรุณาเลือกใหม่ค่ะ",
     TOKEN_EXPIRED: "ใช้เวลาส่งนานเกินไป กรุณาลองอีกครั้งค่ะ",
     RATE_LIMITED: "มีผู้ส่งรูปพร้อมกันจำนวนมาก กรุณารอสักครู่แล้วลองใหม่ค่ะ",
     BUSY_RETRY: "ระบบกำลังบันทึกรูปอื่นอยู่ กรุณาลองอีกครั้งค่ะ",
-    SAVE_FAILED: "บันทึกรูปไม่สำเร็จ กรุณาลองอีกครั้งค่ะ",
+    SAVE_FAILED: "บันทึกไฟล์ไม่สำเร็จ กรุณาลองอีกครั้งค่ะ",
   };
-  return messages[code] || "ส่งรูปไม่สำเร็จ กรุณาลองอีกครั้งค่ะ";
+  return messages[code] || "ส่งไฟล์ไม่สำเร็จ กรุณาลองอีกครั้งค่ะ";
 }

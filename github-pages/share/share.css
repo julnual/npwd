@@ -86,7 +86,10 @@ form { width: min(100%, 36.5rem); margin: 0 auto; padding: 2.75rem 1.25rem 1.5re
 .text-button { min-height: 44px; cursor: pointer; border: 0; padding: 0.4rem; color: #874d42; background: none; font-size: 0.875rem; font-weight: 400; }
 .preview-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.55rem; }
 .preview-item { position: relative; overflow: hidden; aspect-ratio: 1; background: #e6e7dd; }
-.preview-item img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.preview-item img, .preview-item video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.preview-grid.has-video { grid-template-columns: minmax(0, 1fr); }
+.preview-grid.has-video .preview-item { width: 100%; aspect-ratio: 9 / 16; max-height: 34rem; }
+.preview-grid.has-video video { background: #20251f; object-fit: contain; }
 .remove-photo { position: absolute; top: 0.35rem; right: 0.35rem; display: grid; place-items: center; width: 2rem; height: 2rem; cursor: pointer; border: 1px solid rgba(255, 253, 248, 0.75); border-radius: 50%; color: var(--paper); background: rgba(20, 34, 24, 0.68); font-size: 1.1rem; line-height: 1; }
 .field-error { margin: 0.9rem 0 0; color: #874d42; font-size: 0.875rem; line-height: 1.8; }
 

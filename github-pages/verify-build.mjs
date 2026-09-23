@@ -29,6 +29,7 @@ assert(shareJsName, "Share page JavaScript bundle is missing");
 const shareJs = readFileSync(path.join(out, "assets", shareJsName), "utf8");
 assert(shareJs.includes("Share Your Moments") || shareHtml.includes("Share Your Moments"));
 assert(!shareJs.includes("galleryConsent") && shareJs.includes("dataBase64"), "Share upload payload has unexpected or missing metadata");
+assert(shareJs.includes("video/quicktime") && shareHtml.includes("25 MB") && shareHtml.includes("30 วินาที"), "Share page video support is missing");
 assert(shareJs.includes("ploy-nan-photo"), "Share page is not using its dedicated photo receiver");
 assert(allJs.includes("script.google.com/macros/s/"), "Share page is not connected to an Apps Script URL");
 assert(!shareJs.includes("WEDDING_API_KEY"), "Private API configuration leaked into share client");

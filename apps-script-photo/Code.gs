@@ -1,5 +1,5 @@
 /*
- * PLOY & NAN — Guest Photo Receiver
+ * PLOY & NAN — Guest Photo & Video Receiver
  * Dedicated Apps Script for /share/ only.
  * It does not read or modify the RSVP/Wishes spreadsheet or its Apps Script.
  *
@@ -15,6 +15,9 @@ var PHOTO_SPREADSHEET_NAME = 'PLOY_NAN_GUEST_PHOTOS_2026';
 var PHOTO_FOLDER_NAME = 'PLOY_NAN_GUEST_PHOTOS_2026';
 var PHOTO_SHEET_NAME = 'Photos';
 var PHOTO_MAX_BASE64 = 3000000;
+var VIDEO_MAX_BASE64 = 35000000;
+var VIDEO_MAX_BYTES = 25 * 1024 * 1024;
+var VIDEO_MAX_SECONDS = 30;
 var PHOTO_HEADERS = [
   'รหัสรูป',
   'รหัสชุดอัปโหลด',
@@ -27,7 +30,9 @@ var PHOTO_HEADERS = [
   'ขนาดไฟล์ (bytes)',
   'ความกว้าง (px)',
   'ความสูง (px)',
-  'สถานะ'
+  'สถานะ',
+  'ประเภทสื่อ',
+  'ความยาววิดีโอ (วินาที)'
 ];
 
 function doGet(event) {
@@ -35,9 +40,10 @@ function doGet(event) {
   if (!p.mode) {
     return json_({
       ok: true,
-      service: 'PLOY & NAN Photo Upload',
-      version: 1,
-      photoReady: configured_()
+      service: 'PLOY & NAN Media Upload',
+      version: 2,
+      photoReady: configured_(),
+      mediaReady: configured_()
     });
   }
   if (p.mode !== 'challenge' || !originAllowed_(p.origin) || !uuid_(p.channel) || !uuid_(p.requestId)) {
@@ -70,17 +76,17 @@ function publicPost_(event) {
   }
   try {
     var raw = event.postData && event.postData.contents;
-    if (typeof raw !== 'string' || raw.length > 5000000 || typeof p.payload !== 'string' || p.payload.length > 3200000) {
+    if (typeof raw !== 'string' || raw.length > 47000000 || typeof p.payload !== 'string' || p.payload.length > 37000000) {
       return bridgeReply_(p, 'result', { ok: false, code: 'INVALID_REQUEST' });
     }
     if (String(p.website || '').trim()) return bridgeReply_(p, 'result', { ok: false, code: 'INVALID_REQUEST' });
     if (!configured_()) return bridgeReply_(p, 'result', { ok: false, code: 'PHOTO_NOT_CONFIGURED' });
     if (!validToken_(p)) return bridgeReply_(p, 'result', { ok: false, code: 'TOKEN_EXPIRED' });
     var data = JSON.parse(p.payload);
-    if (!object_(data) || data.type !== 'photo' || data.requestId !== p.requestId) {
+    if (!object_(data) || ['photo', 'video'].indexOf(data.type) < 0 || data.requestId !== p.requestId) {
       return bridgeReply_(p, 'result', { ok: false, code: 'INVALID_REQUEST' });
     }
-    return bridgeReply_(p, 'result', savePhoto_(data));
+    return bridgeReply_(p, 'result', saveMedia_(data));
   } catch (_) {
     return bridgeReply_(p, 'result', { ok: false, code: 'SAVE_FAILED' });
   }
@@ -112,7 +118,7 @@ function setupPhotoSharing() {
       .setFontWeight('bold').setBackground('#858A74').setFontColor('#ffffff');
     sheet.autoResizeColumns(1, PHOTO_HEADERS.length);
   } else {
-    verifyHeaders_(sheet);
+    ensureHeaders_(sheet);
   }
 
   var folderId = props.getProperty('PHOTO_FOLDER_ID');
@@ -135,9 +141,9 @@ function setupPhotoSharing() {
   };
 }
 
-function savePhoto_(data) {
-  var photo;
-  try { photo = validatePhoto_(data); } catch (_) { return { ok: false, code: 'INVALID_FIELDS' }; }
+function saveMedia_(data) {
+  var media;
+  try { media = validateMedia_(data); } catch (_) { return { ok: false, code: 'INVALID_FIELDS' }; }
   var lock = LockService.getScriptLock();
   var acquired = false;
   var createdFile = null;
@@ -148,7 +154,7 @@ function savePhoto_(data) {
     var spreadsheet = SpreadsheetApp.openById(props.getProperty('PHOTO_SPREADSHEET_ID'));
     var sheet = spreadsheet.getSheetByName(PHOTO_SHEET_NAME);
     if (!sheet) return { ok: false, code: 'PHOTO_NOT_CONFIGURED' };
-    verifyHeaders_(sheet);
+    ensureHeaders_(sheet);
 
     var rows = sheet.getLastRow();
     if (rows > 1) {
@@ -158,27 +164,32 @@ function savePhoto_(data) {
     }
     if (!takeRateSlot_()) return { ok: false, code: 'RATE_LIMITED' };
 
-    var bytes = Utilities.base64Decode(photo.dataBase64);
-    if (bytes.length !== photo.byteSize) return { ok: false, code: 'INVALID_FIELDS' };
+    var bytes = Utilities.base64Decode(media.dataBase64);
+    if (bytes.length !== media.byteSize) return { ok: false, code: 'INVALID_FIELDS' };
     var savedAt = Utilities.formatDate(new Date(), 'Asia/Bangkok', 'yyyy-MM-dd HH:mm:ss');
-    var driveName = 'PN_' + savedAt.replace(/[-: ]/g, '') + '_' + data.requestId.slice(0, 8) + '.jpg';
+    var extension = media.type === 'video'
+      ? ({ 'video/mp4': '.mp4', 'video/quicktime': '.mov', 'video/webm': '.webm' }[media.mimeType])
+      : '.jpg';
+    var driveName = 'PN_' + savedAt.replace(/[-: ]/g, '') + '_' + data.requestId.slice(0, 8) + extension;
     var folder = DriveApp.getFolderById(props.getProperty('PHOTO_FOLDER_ID'));
-    createdFile = folder.createFile(Utilities.newBlob(bytes, photo.mimeType, driveName));
-    createdFile.setDescription('PLOY & NAN guest photo | batch ' + photo.batchId + ' | private');
+    createdFile = folder.createFile(Utilities.newBlob(bytes, media.mimeType, driveName));
+    createdFile.setDescription('PLOY & NAN guest ' + media.type + ' | batch ' + media.batchId + ' | private');
 
     var row = [
       data.requestId,
-      photo.batchId,
+      media.batchId,
       savedAt,
       driveName,
-      photo.originalName,
+      media.originalName,
       createdFile.getId(),
       createdFile.getUrl(),
-      photo.mimeType,
-      photo.byteSize,
-      photo.width,
-      photo.height,
-      'private'
+      media.mimeType,
+      media.byteSize,
+      media.width,
+      media.height,
+      'private',
+      media.type === 'video' ? 'วิดีโอ' : 'รูปภาพ',
+      media.type === 'video' ? media.durationSeconds : ''
     ];
     sheet.getRange(rows + 1, 1, 1, row.length).setValues([row]);
     SpreadsheetApp.flush();
@@ -193,21 +204,33 @@ function savePhoto_(data) {
   }
 }
 
-function validatePhoto_(data) {
+function validateMedia_(data) {
   if (!uuid_(data.requestId) || !uuid_(data.batchId)) throw new Error('Invalid IDs');
-  if (data.mimeType !== 'image/jpeg') throw new Error('Invalid MIME type');
-  if (typeof data.dataBase64 !== 'string' || !data.dataBase64 || data.dataBase64.length > PHOTO_MAX_BASE64 ||
+  var isPhoto = data.type === 'photo';
+  var isVideo = data.type === 'video';
+  var videoTypes = ['video/mp4', 'video/quicktime', 'video/webm'];
+  if ((!isPhoto && !isVideo) || (isPhoto && data.mimeType !== 'image/jpeg') ||
+      (isVideo && videoTypes.indexOf(data.mimeType) < 0)) throw new Error('Invalid MIME type');
+  var maxBase64 = isVideo ? VIDEO_MAX_BASE64 : PHOTO_MAX_BASE64;
+  var maxBytes = isVideo ? VIDEO_MAX_BYTES : 2000000;
+  if (typeof data.dataBase64 !== 'string' || !data.dataBase64 || data.dataBase64.length > maxBase64 ||
       !/^[A-Za-z0-9+/]+={0,2}$/.test(data.dataBase64)) throw new Error('Invalid image');
-  if (!Number.isInteger(data.byteSize) || data.byteSize < 1 || data.byteSize > 2000000) throw new Error('Invalid size');
-  if (!Number.isInteger(data.width) || data.width < 1 || data.width > 4000 ||
-      !Number.isInteger(data.height) || data.height < 1 || data.height > 4000) throw new Error('Invalid dimensions');
+  if (!Number.isInteger(data.byteSize) || data.byteSize < 1 || data.byteSize > maxBytes) throw new Error('Invalid size');
+  if (!Number.isInteger(data.width) || data.width < 1 || data.width > 7680 ||
+      !Number.isInteger(data.height) || data.height < 1 || data.height > 7680) throw new Error('Invalid dimensions');
+  var durationSeconds = Number(data.durationSeconds || 0);
+  if (isVideo && (!Number.isFinite(durationSeconds) || durationSeconds <= 0 || durationSeconds > VIDEO_MAX_SECONDS + 0.1)) {
+    throw new Error('Invalid duration');
+  }
   return {
+    type: data.type,
     batchId: data.batchId,
     originalName: text_(data.originalName, 180),
     mimeType: data.mimeType,
     byteSize: data.byteSize,
     width: data.width,
     height: data.height,
+    durationSeconds: isVideo ? Math.round(durationSeconds * 10) / 10 : 0,
     dataBase64: data.dataBase64
   };
 }
@@ -260,9 +283,21 @@ function bridgeReply_(context, phase, data) {
   return HtmlService.createHtmlOutput(html).setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
-function verifyHeaders_(sheet) {
+function ensureHeaders_(sheet) {
   var actual = sheet.getRange(1, 1, 1, PHOTO_HEADERS.length).getValues()[0];
-  if (!PHOTO_HEADERS.every(function(v, i) { return actual[i] === v; })) throw new Error('Unexpected sheet headers');
+  var legacyCount = PHOTO_HEADERS.length - 2;
+  if (!PHOTO_HEADERS.slice(0, legacyCount).every(function(v, i) { return actual[i] === v; })) {
+    throw new Error('Unexpected sheet headers');
+  }
+  if (!actual[legacyCount] && !actual[legacyCount + 1]) {
+    sheet.getRange(1, legacyCount + 1, 1, 2).setValues([PHOTO_HEADERS.slice(legacyCount)])
+      .setFontWeight('bold').setBackground('#858A74').setFontColor('#ffffff');
+    sheet.autoResizeColumns(legacyCount + 1, 2);
+    return;
+  }
+  if (actual[legacyCount] !== PHOTO_HEADERS[legacyCount] || actual[legacyCount + 1] !== PHOTO_HEADERS[legacyCount + 1]) {
+    throw new Error('Unexpected sheet headers');
+  }
 }
 
 function text_(value, max) {
