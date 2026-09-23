@@ -27,6 +27,7 @@ test("photo share is an isolated mobile-first page with requested controls", () 
   assert(client.includes("IS_SAFE_PREVIEW"));
   assert(client.includes("simulatePreviewUpload"));
   assert(!client.includes("galleryConsent"));
+  assert(!client.includes("consent."));
   assert(html.includes('id="preview-notice"'));
 });
 

@@ -237,7 +237,6 @@ function updateProgress(value, label) {
 
 function setControlsDisabled(disabled) {
   input.disabled = disabled;
-  consent.disabled = disabled;
   chooseAgain.disabled = disabled;
   submitButton.disabled = disabled || selected.length === 0;
   previewGrid.querySelectorAll("button").forEach(button => { button.disabled = disabled; });
@@ -256,7 +255,6 @@ function clearSelected() {
 
 function resetForm() {
   clearSelected();
-  consent.checked = false;
   form.reset();
   form.hidden = false;
   successPanel.hidden = true;
