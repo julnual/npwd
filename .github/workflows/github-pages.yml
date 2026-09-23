@@ -27,6 +27,8 @@ jobs:
       - run: npm run build:pages
       - name: Require the updated receiver before publishing
         run: node github-pages/check-receiver.mjs
+      - name: Require the dedicated photo receiver before publishing
+        run: node github-pages/check-photo-receiver.mjs
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist/github-pages

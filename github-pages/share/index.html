@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#fbf7ee" />
+    <meta name="description" content="ร่วมแชร์ภาพความทรงจำในงานแต่งงาน PLOY &amp; NAN — In Full Bloom" />
+    <title>Share Your Moments | PLOY &amp; NAN</title>
+    <link rel="icon" href="../favicon-heart.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Libre+Caslon+Display&family=Noto+Sans+Thai:wght@300;400&family=Parisienne&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./share.css" />
+    <script type="module" src="./main.js"></script>
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="share-card" aria-labelledby="page-title">
+        <header class="hero">
+          <h1 id="page-title" class="visually-hidden">แชร์รูปงานแต่ง PLOY และ NAN</h1>
+          <img
+            class="hero-cover"
+            src="/images/share-cover.jpg"
+            width="1086"
+            height="1448"
+            alt="ภาพวาดคู่บ่าวสาว PLOY และ NAN ในธีม In Full Bloom"
+          />
+          <nav class="hero-nav" aria-label="ข้อมูลคู่บ่าวสาว">
+            <a class="monogram" href="../" aria-label="กลับเว็บไซต์งานแต่ง PLOY และ NAN">P <i>&amp;</i> N</a>
+            <span class="date-mark">22 · 11 · 2026</span>
+          </nav>
+        </header>
+
+        <section class="share-intro" aria-label="คำเชิญแบ่งปันภาพ">
+          <p class="section-eyebrow">Share your moments</p>
+          <h2>Our Shared <em>Memories.</em></h2>
+          <p class="thai-title">แบ่งปันภาพความทรงจำของเรา</p>
+          <div class="hero-rule" aria-hidden="true"></div>
+          <p class="intro">ขอบคุณที่มาร่วมเติมเต็มวันพิเศษ<br />ส่งภาพที่คุณถ่ายไว้ให้เราเก็บเป็นความทรงจำด้วยกันนะคะ</p>
+        </section>
+
+        <form id="photo-form" novalidate>
+          <p id="preview-notice" class="preview-notice" hidden>
+            โหมด Preview — ทดลองเลือกและส่งรูปได้ครบทุกขั้นตอน โดยยังไม่มีรูปถูกอัปโหลดจริง
+          </p>
+          <section class="upload-panel" aria-labelledby="upload-title">
+            <p class="form-eyebrow">YOUR PHOTOS</p>
+            <div class="step-heading">
+              <span class="step-number" aria-hidden="true">♥</span>
+              <div>
+                <h2 id="upload-title">เลือกรูปภาพ</h2>
+                <p>สูงสุด 5 รูปต่อครั้ง</p>
+              </div>
+            </div>
+
+            <input id="photo-input" class="visually-hidden" type="file" accept="image/*" multiple />
+            <label class="drop-zone" for="photo-input" id="drop-zone">
+              <span class="camera-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img"><path d="M7.7 5.5 9 3.8h6l1.3 1.7H19a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7.5a2 2 0 0 1 2-2h2.7Z"/><circle cx="12" cy="12.5" r="3.5"/></svg>
+              </span>
+              <strong>แตะเพื่อเลือกรูป</strong>
+              <small>รองรับ JPG, PNG, WEBP และรูปจากโทรศัพท์</small>
+            </label>
+
+            <div id="selection-summary" class="selection-summary" hidden>
+              <span id="selection-count">เลือกแล้ว 0/5 รูป</span>
+              <button class="text-button" id="choose-again" type="button">เลือกใหม่</button>
+            </div>
+            <div id="preview-grid" class="preview-grid" aria-live="polite"></div>
+            <p id="file-error" class="field-error" role="alert" hidden></p>
+          </section>
+
+          <section id="progress-panel" class="progress-panel" aria-live="polite" hidden>
+            <div class="progress-copy">
+              <span id="progress-label">กำลังเตรียมรูปภาพ…</span>
+              <span id="progress-value">0%</span>
+            </div>
+            <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <span id="progress-bar"></span>
+            </div>
+          </section>
+
+          <button id="submit-button" class="submit-button" type="submit" disabled>
+            <span>ส่งรูปให้ PLOY &amp; NAN</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 14-7-4.5 14-3-5-6.5-2Z"/><path d="m11.5 14 3-3"/></svg>
+          </button>
+          <p class="privacy-note"><span aria-hidden="true">♧</span> รูปจะถูกเก็บไว้ในพื้นที่ส่วนตัวของ PLOY &amp; NAN</p>
+        </form>
+
+        <section id="success-panel" class="success-panel" tabindex="-1" hidden>
+          <span class="success-mark" aria-hidden="true">✓</span>
+          <p class="section-eyebrow">Thank you</p>
+          <h2>ได้รับรูปแล้วนะคะ</h2>
+          <p id="success-copy">ขอบคุณที่ร่วมแบ่งปันความทรงจำดี ๆ ให้เรา</p>
+          <button id="send-more" class="submit-button secondary" type="button">ส่งรูปเพิ่มเติม</button>
+        </section>
+
+        <a class="back-link" href="../">
+          <span aria-hidden="true">←</span>
+          กลับเว็บไซต์งานแต่ง
+        </a>
+      </section>
+    </main>
+  </body>
+</html>

@@ -15,6 +15,13 @@ On retries the UI reuses the request ID for unchanged fields. The receiver dedup
 by ID under a script lock and escapes formula prefixes before writing a row.
 The UI reports success only for an acknowledged matching request ID, never HTTP status alone.
 
+The isolated GitHub Pages `/share/` route uses a separate Apps Script project under
+`apps-script-photo/`. That project creates its own Google Sheet and private Drive folder;
+it does not read or modify this RSVP/Wishes spreadsheet. The share page sends one
+compressed JPEG per acknowledged request with request/batch IDs, original filename,
+MIME type, byte size, dimensions and base64 image bytes. Every photo starts as `private`.
+Image bytes are saved only to Drive, not duplicated in Sheets.
+
 Connection status at implementation: URL supplied; awaiting owner's key pairing and
 a real submission check. No real guest record has been written by the implementation tests.
 

@@ -36,5 +36,15 @@ export default defineConfig(() => ({
   plugins: [pagesAdapter(), react()],
   resolve: { alias: { "@": root } },
   css: { postcss: root },
-  build: { outDir: path.join(root, "dist/github-pages"), emptyOutDir: true, sourcemap: false },
+  build: {
+    outDir: path.join(root, "dist/github-pages"),
+    emptyOutDir: true,
+    sourcemap: false,
+    rollupOptions: {
+      input: {
+        main: path.join(root, "github-pages/index.html"),
+        share: path.join(root, "github-pages/share/index.html"),
+      },
+    },
+  },
 }));

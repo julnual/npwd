@@ -2,9 +2,35 @@
 
 Target: https://julnual.github.io/npwd/
 
+Guest photo route (added separately): https://julnual.github.io/npwd/share/
+
 The existing design, photographs, gallery, RSVP and wishes forms are reused.
-No Google Forms and no new spreadsheet are needed. The private Sites publication
-and its server-side `/api/wedding` route remain unchanged.
+Photo uploads use a new dedicated Apps Script, Google Sheet and private Drive folder.
+The existing RSVP/Wishes Apps Script, Sheet and private Sites route remain unchanged.
+
+The `/share/` source is isolated under `github-pages/share/`. Adding or previewing
+this route does not add a link to, or modify the content of, the existing home page.
+
+## One-time dedicated photo-sharing setup (before publishing `/share/`)
+
+1. Go to `script.google.com` and create a **New project** named
+   `PLOY & NAN — Guest Photo Upload`.
+2. Replace its `Code.gs` with [`../apps-script-photo/Code.gs`](../apps-script-photo/Code.gs).
+   If the manifest is shown, use [`../apps-script-photo/appsscript.json`](../apps-script-photo/appsscript.json).
+3. Select `setupPhotoSharing`, press **Run** once, and approve the requested Google
+   Sheets and Google Drive permissions. The function creates a new private spreadsheet
+   and a new private Drive folder, both named `PLOY_NAN_GUEST_PHOTOS_2026`.
+4. Deploy → New deployment → Web app. Set Execute as **Me** and access **Anyone**.
+5. Copy the new `/exec` URL into [`share/config.mjs`](share/config.mjs) as
+   `PHOTO_SCRIPT_URL`. Do not reuse the RSVP/Wishes URL.
+6. Open the new `/exec` URL and confirm the response contains
+   `"version":1` and `"photoReady":true`.
+
+Each selected image is resized to a maximum 1600-pixel edge, converted to JPEG,
+and uploaded separately. The `Photos` tab stores the batch/request IDs, timestamps,
+original and Drive filenames, File ID/link, MIME type, byte size, dimensions and
+status. Every photo begins as `private`. Drive files are never shared publicly by
+the upload code.
 
 ## One-time update in the existing Google Apps Script project
 
@@ -45,6 +71,7 @@ npm ci
 npm run test:pages
 npm run build:pages
 node github-pages/check-receiver.mjs
+node github-pages/check-photo-receiver.mjs
 ```
 
 Upload **only `dist/github-pages/`** to a static host, not the full source tree.
@@ -58,7 +85,7 @@ so the `/npwd/` repository prefix works without affecting the private Site.
 - Never put `WEDDING_API_KEY`, real environment files, Sheet exports, or guest
   responses in GitHub or browser code. The `/exec` deployment URL is public.
 - Google Sheets sharing settings are unchanged. There is no guest-list read API.
-- Submission is intentionally public. Origin allowlisting and signed short-lived
+- Photo submission is intentionally public. Origin allowlisting and signed short-lived
   challenges are **not guest authentication or bot protection**: a determined
   caller can request challenges. There is a global limit of 60 new public writes
   per minute; Apps Script quotas can still be exhausted. Add a verified CAPTCHA
@@ -73,8 +100,8 @@ so the `/npwd/` repository prefix works without affecting the private Site.
   starts a new request ID, so check the Sheet if you are unsure.
 - Open the website directly, not inside an unrelated iframe. Privacy extensions
   blocking Google frames may prevent submission; the form will show an error.
-- For a custom domain, update `SITE_ORIGIN` in `config.mjs` and the origin allowlist
-  in `apps-script/Code.gs`, then redeploy both sides. No key changes are needed.
+- For a custom domain, update `SITE_ORIGIN` in `share/config.mjs` and the origin
+  allowlist in `apps-script-photo/Code.gs`, then redeploy both sides.
 
 ## Rollback
 
@@ -84,4 +111,4 @@ Site's keyed JSON API. Keep the existing deployment URL and Script Properties.
 
 Verification performed during preparation: isolated receiver/transport tests and
 production static build. Live cross-origin submission must still be checked after
-the owner updates the existing Apps Script deployment.
+the owner deploys the dedicated photo Apps Script.
