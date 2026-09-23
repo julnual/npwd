@@ -8,7 +8,7 @@ assert(response.ok, "Cannot reach the dedicated photo Apps Script deployment.");
 let health;
 try { health = await response.json(); } catch { throw new Error("Photo Apps Script must allow Anyone and return JSON health."); }
 assert(health.ok && health.version === 2 && health.photoReady === true && health.mediaReady === true,
-  "Run setupPhotoSharing and deploy the dedicated photo Apps Script before publishing.");
+  `Run setupPhotoSharing and deploy the dedicated media Apps Script before publishing. Health: ${JSON.stringify(health)}`);
 
 const url = new URL(PHOTO_SCRIPT_URL);
 url.search = new URLSearchParams({
