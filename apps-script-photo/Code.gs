@@ -37,15 +37,7 @@ var PHOTO_HEADERS = [
 
 function doGet(event) {
   var p = event && event.parameter || {};
-  if (!p.mode) {
-    return json_({
-      ok: true,
-      service: 'PLOY & NAN Media Upload',
-      version: 2,
-      photoReady: configured_(),
-      mediaReady: configured_()
-    });
-  }
+  if (!p.mode || p.mode === 'health-v2') return mediaHealth_();
   if (p.mode !== 'challenge' || !originAllowed_(p.origin) || !uuid_(p.channel) || !uuid_(p.requestId)) {
     return json_({ ok: false, code: 'INVALID_REQUEST' });
   }
@@ -59,6 +51,17 @@ function doGet(event) {
   } catch (_) {
     return bridgeReply_(p, 'challenge', { ok: false, code: 'UNAVAILABLE' });
   }
+}
+
+function mediaHealth_() {
+  return json_({
+    ok: true,
+    service: 'PLOY & NAN Media Upload',
+    version: 2,
+    build: 'media-v2',
+    photoReady: configured_(),
+    mediaReady: configured_()
+  });
 }
 
 function doPost(event) {
