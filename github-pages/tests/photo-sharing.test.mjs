@@ -63,7 +63,7 @@ test("media transport uses a dedicated acknowledged Apps Script bridge", () => {
   assert(transport.includes("export function submitMedia"));
   assert(!transport.includes("no-cors"));
   assert(!transport.includes("WEDDING_API_KEY"));
-  assert(shareConfig.includes("AKfycbxqH5nBiaFZZeJKb-GA84RdXHJ4ZO7GduEGA29_KrZIFM-kNgS5xi4ohDWSLYdIeQWYAQ"));
+  assert(shareConfig.includes("AKfycbwR6jhtmjjFFReU9TX4H7xROhSnrf7vDNCNoON1WViJrld_7XLV-hsj4oqIRmi7GWWM"));
 });
 
 test("dedicated backend creates separate private Sheet and Drive media storage", () => {
